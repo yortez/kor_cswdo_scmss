@@ -28,7 +28,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Rupadana\ApiService\ApiServicePlugin;
-
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Schema;
@@ -145,5 +145,11 @@ class AdminPanelProvider extends PanelProvider
                 });
         }
         return $plugins;
+    }
+
+
+    public function boot(): void
+    {
+        Model::unguard();
     }
 }
