@@ -54,6 +54,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandLogo(asset('logo.png'))
+            ->brandLogoHeight('3.1rem')
+            ->favicon(asset('logo.jpeg'))
             ->id('admin')
             ->path('')
             ->when($this->settings->login_enabled ?? true, fn($panel) => $panel->login(Login::class))
@@ -94,15 +97,21 @@ class AdminPanelProvider extends PanelProvider
             ->plugins(
                 $this->getPlugins()
             )
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->resources([
+                config('filament-logger.activity_resource')
+            ]);
     }
+
+
+
 
     private function getPlugins(): array
     {
         $plugins = [
             ThemesPlugin::make(),
             FilamentShieldPlugin::make(),
-            ApiServicePlugin::make(),
+            // ApiServicePlugin::make(),
             BreezyCore::make()
                 ->myProfile(
                     shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)

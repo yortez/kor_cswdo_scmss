@@ -24,53 +24,54 @@ class MasterListResource extends Resource
 {
     protected static ?string $model = MasterList::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel = 'Master List';
+    protected static ?string $pluralModelLabel = 'Master List';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?int $navigationSort = 0;
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static ?string $navigationBadgeTooltip = 'The number of seniors';
+    protected static ?string $recordTitleAttribute = 'full_name';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
-
-
                 Forms\Components\Group::make()->schema([
-
-
                     Forms\Components\Section::make('Personal Information')
                         ->description('')
                         ->schema([
 
-
                             Forms\Components\TextInput::make('osca_id')
                                 ->unique(ignoreRecord: true)
-                                ->numeric()
-                                ->columnSpan(2),
-                            Forms\Components\Group::make()->schema([
-                                Forms\Components\TextInput::make('last_name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->rules([
-                                        function (Get $get) {
-                                            return Rule::unique('master_lists', 'last_name')
-                                                ->where('first_name', $get('first_name'))
-                                                ->where('middle_name', $get('middle_name'))
-                                                ->ignore($get('id'));
-                                        }
-                                    ])
-                                    ->live(onBlur: true),
-                                Forms\Components\TextInput::make('first_name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true),
-                                Forms\Components\TextInput::make('middle_name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true),
-                            ])->columns(3)->columnSpanFull(),
-
-
+                                ->numeric(),
+                            Forms\Components\TextInput::make('last_name')
+                                ->required()
+                                ->maxLength(255)
+                                ->rules([
+                                    function (Get $get) {
+                                        return Rule::unique('master_lists', 'last_name')
+                                            ->where('first_name', $get('first_name'))
+                                            ->where('middle_name', $get('middle_name'))
+                                            ->ignore($get('id'));
+                                    }
+                                ])
+                                ->live(onBlur: true),
+                            Forms\Components\TextInput::make('first_name')
+                                ->required()
+                                ->maxLength(255)
+                                ->live(onBlur: true),
+                            Forms\Components\TextInput::make('middle_name')
+                                ->required()
+                                ->maxLength(255)
+                                ->live(onBlur: true),
                             Forms\Components\TextInput::make('extension')
                                 ->maxLength(255),
+
+
+
                             Forms\Components\DatePicker::make('birthday')
                                 ->required()
                                 ->live(onBlur: true)
@@ -123,24 +124,10 @@ class MasterListResource extends Resource
                                 ->required(),
                             Forms\Components\TextInput::make('birth_place')
                                 ->required()
-                                ->maxLength(255)
-                                ->columnSpan(2),
-                        ])->columns(3),
-                    Forms\Components\Section::make('Other Information')
-                        ->description('')
-                        ->schema([
-
-                            Forms\Components\TextInput::make('gsis_id')
                                 ->maxLength(255),
-                            Forms\Components\TextInput::make('philhealth_id')
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('illness')
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('disability')
-                                ->maxLength(255),
-
-
                         ])->columns(2),
+
+
                 ])->columnSpan(2),
                 Forms\Components\Group::make()->schema([
                     Forms\Components\Section::make('Address')
@@ -189,8 +176,39 @@ class MasterListResource extends Resource
                                 ->preload()
                                 ->required(),
 
-                        ]),
-                    Forms\Components\Section::make('Status')
+                        ])->columnSpan(3),
+
+
+                ])->columns(3)->columnSpanFull(),
+
+                Forms\Components\Group::make()->schema([
+                    Forms\Components\Section::make('Other Information')
+                        ->description('')
+                        ->schema([
+                            Forms\Components\DatePicker::make('date_of_registration')
+                                ->date()
+                                ->required()
+                                ->maxDate(now())
+                                ->columnSpan(1),
+                            Forms\Components\TextInput::make('gsis_id')
+                                ->placeholder('Type N/A if not applicable')
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('philhealth_id')
+                                ->placeholder('Type N/A if not applicable')
+
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('illness')
+                                ->placeholder('Type N/A if not applicable')
+
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('disability')
+                                ->placeholder('Type N/A if not applicable')
+
+                                ->maxLength(255),
+
+
+                        ])->columnSpan(2),
+                    Forms\Components\Section::make('Life Status')
                         ->description('')
                         ->schema([
 
@@ -199,10 +217,7 @@ class MasterListResource extends Resource
                                     'pensioner' => 'Pensioner',
                                     'non-pensioner' => 'Non-Pensioner',
                                 ]),
-                            Forms\Components\DatePicker::make('date_of_registration')
-                                ->date()
-                                ->required()
-                                ->maxDate(now()),
+
                             Forms\Components\Toggle::make('is_active')
                                 ->label(fn($state) => $state ? 'Active' : 'Inactive')
                                 ->default(true)
@@ -212,42 +227,49 @@ class MasterListResource extends Resource
                                     $set('registry_number_hidden', $state);
                                 }),
                             Forms\Components\TextInput::make('registry_number')
+                                ->placeholder('if pensioner is deceased')
                                 ->hidden(fn(Get $get) => $get('is_active'))
                                 ->required(fn(Get $get) => !$get('is_active')),
                             Forms\Components\TextInput::make('remarks')
+                                ->placeholder('Other reasons')
                                 ->hidden(fn(Get $get) => $get('is_active'))
                                 ->required(fn(Get $get) => !$get('is_active')),
-                        ]),
+                        ])->columnSpan(1),
 
+                ])->columns(3)->columnSpanFull(),
 
-
-                ])->columnSpan(1),
-
-            ])->columns(3);
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('osca_id')
+                    ->label("OSCA ID")
                     ->sortable(),
                 Tables\Columns\TextColumn::make('last_name')
-                    ->label('Name')
-                    ->formatStateUsing(fn(MasterList $record): string =>
-                    "{$record->last_name}, {$record->first_name} {$record->middle_name} {$record->extension}")
-                    ->sortable(['last_name', 'first_name', 'middle_name'])
-                    ->searchable(['last_name', 'first_name', 'middle_name', 'extension']),
-
-                Tables\Columns\TextColumn::make('age')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('LAST NAME'),
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label(label: 'FIRSTLAST'),
+                Tables\Columns\TextColumn::make('middle_name')
+                    ->label('MIDDLE NAME'),
+                Tables\Columns\TextColumn::make('extension')
+                    ->label('EXT'),
                 Tables\Columns\TextColumn::make('birthday')
+                    ->label('BIRTHDAY')
                     ->date()
                     ->sortable(),
-
+                Tables\Columns\TextColumn::make('age')
+                    ->label('AGE')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
+                    ->label('GENDER')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('civil_status')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -258,10 +280,12 @@ class MasterListResource extends Resource
                 Tables\Columns\TextColumn::make('birth_place')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('purok.name')
+                Tables\Columns\TextColumn::make('barangay.name')
+                    ->label('BARANGAY')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('barangay.name')
+                Tables\Columns\TextColumn::make('purok.name')
+                    ->label('PUROK')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('city.name')
@@ -295,7 +319,7 @@ class MasterListResource extends Resource
                     })
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         '1' => 'Active',
-                        '0' => 'Deceased',
+                        '0' => 'Inactive',
                     }),
 
 
@@ -309,7 +333,12 @@ class MasterListResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('barangay')
+                    ->relationship('barangay', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Barangay')
+                    ->multiple(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -29,7 +29,8 @@
         "resend/resend-laravel": "^0.15.0",
         "rupadana/filament-api-service": "^3.3",
         "socialiteproviders/google": "^4.1",
-        "stechstudio/filament-impersonate": "^3.15"
+        "stechstudio/filament-impersonate": "^3.15",
+        "z3d0x/filament-logger": "^0.7.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
