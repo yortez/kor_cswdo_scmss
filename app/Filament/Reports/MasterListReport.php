@@ -12,22 +12,23 @@ use EightyNine\Reports\Components\Text;
 use EightyNine\Reports\Components\VerticalSpace;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Hidden;
 
 class MasterListReport extends Report
 {
     public ?string $heading = "Report";
-    // public ?string $subHeading = "All records";
-
-
-
-
-
-
 
     public function header(Header $header): Header
     {
         $image1Path = asset('koronadal-logo.png');
         $image2Path = asset('dswd-logo.jpg');
+        $selectedBarangayId = $this->filterForm->getState()['barangay_id'] ?? null;
+        $barangayName = $selectedBarangayId
+            ? \App\Models\Barangay::find($selectedBarangayId)->name
+            : '-';
+        $selectedType = $this->filterForm->getState()['type'] ?? null;
+
+
         return $header
             ->schema([
                 Header\Layout\HeaderRow::make()
@@ -41,26 +42,32 @@ class MasterListReport extends Report
                             ->schema([
                                 Text::make("Province of South Cotabato")
                                     ->subtitle()
-                                    ->font2Xl()
+                                    ->fontXl()
                                     ->fontBold(),
-                                // Text::make("Social Welfare and Development Office")
-                                //     ->title()
-                                //     ->primary(),
+
                                 Text::make("Social Welfare and Development Office")
                                     ->subtitle()
-                                    ->font2Xl()
+                                    ->fontLg()
                                     ->fontBold(),
 
                                 Text::make("City of Koronadal")
                                     ->subtitle()
-                                    ->fontXl()
+                                    ->fontLg()
                                     ->fontBold(),
+                                VerticalSpace::make(),
+
+
+                                Text::make($barangayName)
+                                    ->subtitle()
+                                    ->fontLg()
+                                    ->fontBold(),
+
 
                             ])->alignCenter(),
                         Header\Layout\HeaderColumn::make()
                             ->schema([
                                 Image::make($image2Path)
-                                    ->width9Xl(),
+                                    ->width8Xl(),
                             ])->alignLeft(),
 
 
@@ -73,14 +80,19 @@ class MasterListReport extends Report
     public function body(Body $body): Body
     {
 
+        $selectedBarangayId = $this->filterForm->getState()['barangay_id'] ?? null;
+        $barangayName = $selectedBarangayId
+            ? \App\Models\Barangay::find($selectedBarangayId)->name
+            : ' ';
+        $selectedType = $this->filterForm->getState()['type'] ?? 'Pensioners and Non-Pensioners';
+
 
         return $body
             ->schema([
                 Body\Layout\BodyColumn::make()
                     ->schema([
                         VerticalSpace::make(),
-
-                        Text::make("Master list of registered Senior Citizens in Koronadal City")
+                        Text::make("Registered Senior Citizens in " . $barangayName . " Koronadal City - " . $selectedType)
                             ->fontSm()
                             ->secondary(),
 
@@ -95,7 +107,8 @@ class MasterListReport extends Report
                                 Body\TextColumn::make("middle_name")
                                     ->label("Middle Name"),
                                 Body\TextColumn::make("extension")
-                                    ->label("Extension"),
+                                    ->label("Ext"),
+
                                 Body\TextColumn::make("age")
                                     ->label("Age"),
                                 Body\TextColumn::make("gender")
@@ -112,11 +125,16 @@ class MasterListReport extends Report
                                         ->join('puroks', 'master_lists.purok_id', '=', 'puroks.id')
                                         ->when(
                                             $filters['type'] ?? null,
-                                            fn($query, $type) => $query->where('master_lists.type', $type)
+                                            fn($query, $type) => $query->where('master_lists.type', $type),
+
                                         )
                                         ->when(
-                                            $filters['is_active'] ?? null,
-                                            fn($query, $status) => $query->where('master_lists.is_active', $status)
+                                            isset($filters['is_active']),
+                                            fn($query) => $query->where('master_lists.is_active', $filters['is_active'])
+                                        )
+                                        ->when(
+                                            $filters['barangay_id'] ?? null,
+                                            fn($query, $barangayId) => $query->where('master_lists.barangay_id', $barangayId)
                                         )
                                         ->select(
                                             'master_lists.osca_id',
@@ -158,20 +176,44 @@ class MasterListReport extends Report
     {
         return $form
             ->schema([
+                Select::make('is_active')
+                    ->label('Status')
+                    ->options([
+                        1 => 'Active',
+                        0 => 'Inactive'
+                    ])
+                    ->placeholder('All')
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $selectedStatus = $state;
+                        // You can now use $selectedBarangayId as needed
+                        // For example, you might want to set it to another component or use it in a query
+                    }),
                 Select::make('type')
                     ->label('Pensioner Type')
                     ->options([
                         'pensioner' => 'Pensioner',
                         'non-pensioner' => 'Non-Pensioner',
                     ])
-                    ->placeholder('All'),
-                Select::make('is_active')
-                    ->label('Status')
-                    ->options([
-                        1 => 'Active',
-                        0 => 'Inactive',
-                    ])
-                    ->placeholder('All'),
+                    ->placeholder('All')
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $selectedType = $state;
+                        // You can now use $selectedBarangayId as needed
+                        // For example, you might want to set it to another component or use it in a query
+                    }),
+                Select::make('barangay_id')
+                    ->label('Barangay')
+                    ->options(function () {
+                        return \App\Models\Barangay::pluck('name', 'id');
+                    })
+                    ->placeholder('All Barangays')
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $selectedBarangayId = $state;
+                        // You can now use $selectedBarangayId as needed
+                        // For example, you might want to set it to another component or use it in a query
+                    })
+
+
+
             ]);
     }
 }

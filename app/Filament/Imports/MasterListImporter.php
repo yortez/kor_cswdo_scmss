@@ -27,14 +27,11 @@ class MasterListImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('extension')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->requiredMapping(),
             ImportColumn::make('birthday')
                 ->requiredMapping()
-                ->rules(['required']),
-            ImportColumn::make('age')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->rules(['required', 'date']),
+
             ImportColumn::make('gender')
                 ->requiredMapping()
                 ->rules(['required']),
@@ -42,36 +39,40 @@ class MasterListImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('religion_id')
+                ->relationship('religion', 'name')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('birth_place')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('city_id')
+                ->relationship('city', 'name')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('barangay_id')
+                ->relationship('barangay', 'name')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('purok_id')
+                ->relationship('purok', 'name')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('philhealth_id')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->requiredMapping(),
             ImportColumn::make('illness')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->requiredMapping(),
             ImportColumn::make('disability')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->requiredMapping(),
             ImportColumn::make('educational_attainment')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('date_of_registration')
+
                 ->requiredMapping()
-                ->rules(['required']),
+                ->rules(['required', 'date']),
+
             ImportColumn::make('is_active')
+                ->boolean()
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('type')
@@ -83,17 +84,14 @@ class MasterListImporter extends Importer
 
     public function resolveRecord(): ?MasterList
     {
-        // return Book::firstOrNew([
-        //     // Update existing records, matching them by `$this->data['column_name']`
-        //     'email' => $this->data['email'],
-        // ]);
-
-        return new MasterList();
+        return MasterList::firstOrNew([
+            'osca_id' => $this->data['osca_id'],
+        ]);
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your book import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your master list import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
             $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';

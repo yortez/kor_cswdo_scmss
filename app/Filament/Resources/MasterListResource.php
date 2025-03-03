@@ -342,8 +342,7 @@ class MasterListResource extends Resource
                     ->relationship('barangay', 'name')
                     ->searchable()
                     ->preload()
-                    ->label('Barangay')
-                    ->multiple(),
+                    ->label('Barangay'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
