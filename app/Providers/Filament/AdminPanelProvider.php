@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Schema;
+use EightyNine\Reports\ReportsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -106,6 +107,7 @@ class AdminPanelProvider extends PanelProvider
     private function getPlugins(): array
     {
         $plugins = [
+            ReportsPlugin::make(),
             ThemesPlugin::make(),
             FilamentShieldPlugin::make(),
             // ApiServicePlugin::make(),

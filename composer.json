@@ -16,6 +16,7 @@
         "bezhansalleh/filament-shield": "^3.3",
         "dedoc/scramble": "^0.11.33",
         "dutchcodingcompany/filament-socialite": "^2.3",
+        "eightynine/filament-reports": "^3.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",

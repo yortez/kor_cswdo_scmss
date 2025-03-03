@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Barangay extends Model
 {
-    //
+    public function masterList()
+    {
+        return $this->hasMany(MasterList::class);
+    }
 
     // add fillable
     protected $fillable = [];
