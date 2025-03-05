@@ -6,7 +6,11 @@ use App\Filament\Resources\MasterListResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
-
+use App\Filament\Imports\MasterListImporter;
+use App\Filament\Exports\MasterListExporter;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Facades\Filament;
+use Filament\Tables\Actions\ImportAction;
 
 class ListMasterLists extends ListRecords
 {
@@ -16,7 +20,14 @@ class ListMasterLists extends ListRecords
     {
         return [
             Actions\CreateAction::make()->label('Add Senior Citizen'),
-
+            ImportAction::make()->importer(MasterListImporter::class)
+                ->options([
+                    'religion_id' => Filament::getReligion()->id,
+                    'city_id' => Filament::getCity()->id,
+                    'barangay_id' => Filament::getBarangay()->id,
+                    'purok_id' => Filament::getPurok()->id,
+                ]),
+            ExportAction::make()->exporter(MasterListExporter::class),
 
         ];
     }

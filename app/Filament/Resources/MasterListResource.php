@@ -18,12 +18,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use App\Models\Purok;
 use App\Models\Barangay;
+use App\Models\Religion;
 use Filament\Forms\Components\Radio;
 use App\Filament\Imports\MasterListImporter;
 use App\Filament\Exports\MasterListExporter;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ExportAction;
-
+use Filament\Facades\Filament;
 
 class MasterListResource extends Resource
 {
@@ -355,10 +356,7 @@ class MasterListResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->headerActions([
-                // ImportAction::make()->importer(MasterListImporter::class),
-                ExportAction::make()->exporter(MasterListExporter::class),
-            ]);
+            ->headerActions([]);
     }
 
 
