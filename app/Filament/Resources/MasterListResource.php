@@ -19,11 +19,13 @@ use Illuminate\Support\Collection;
 use App\Models\Purok;
 use App\Models\Barangay;
 use App\Models\Religion;
+use App\Models\City;
 use Filament\Forms\Components\Radio;
 use App\Filament\Imports\MasterListImporter;
 use App\Filament\Exports\MasterListExporter;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ExportAction;
+use Filament\Facades\Filament;
 
 
 class MasterListResource extends Resource
@@ -281,7 +283,8 @@ class MasterListResource extends Resource
                 Tables\Columns\TextColumn::make('civil_status')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('religion')
+                Tables\Columns\TextColumn::make('religion.name')
+                    ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('birth_place')
@@ -357,10 +360,7 @@ class MasterListResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->headerActions([
-                // ImportAction::make()->importer(MasterListImporter::class),
-                ExportAction::make()->exporter(MasterListExporter::class),
-            ]);
+            ->headerActions([]);
     }
 
 

@@ -34,6 +34,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Schema;
 use EightyNine\Reports\ReportsPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
+use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -108,6 +109,7 @@ class AdminPanelProvider extends PanelProvider
     private function getPlugins(): array
     {
         $plugins = [
+            FilamentLaravelLogPlugin::make(),
             EasyFooterPlugin::make(),
             ReportsPlugin::make(),
             ThemesPlugin::make(),

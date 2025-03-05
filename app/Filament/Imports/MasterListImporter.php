@@ -27,7 +27,8 @@ class MasterListImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('extension')
-                ->requiredMapping(),
+                ->requiredMapping()
+                ->ignoreBlankState(),
             ImportColumn::make('birthday')
                 ->requiredMapping()
                 ->rules(['required', 'date']),
@@ -40,26 +41,31 @@ class MasterListImporter extends Importer
             ImportColumn::make('civil_status')
                 ->requiredMapping()
                 ->rules(['required']),
-            ImportColumn::make('religion')
-                ->relationship(),
+            ImportColumn::make('religion_id')
+                ->relationship('religion', 'name'),
             ImportColumn::make('birth_place')
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('city_id')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->relationship('city', 'name'),
+
             ImportColumn::make('barangay_id')
-                ->requiredMapping()
-                ->rules(['required']),
+                ->relationship('barangay', 'name'),
+
             ImportColumn::make('purok_id')
+                ->relationship('purok', 'name'),
+            ImportColumn::make('gsis_id')
                 ->requiredMapping()
-                ->rules(['required']),
+                ->ignoreBlankState(),
             ImportColumn::make('philhealth_id')
-                ->requiredMapping(),
+                ->requiredMapping()
+                ->ignoreBlankState(),
             ImportColumn::make('illness')
-                ->requiredMapping(),
+                ->requiredMapping()
+                ->ignoreBlankState(),
             ImportColumn::make('disability')
-                ->requiredMapping(),
+                ->requiredMapping()
+                ->ignoreBlankState(),
             ImportColumn::make('educational_attainment')
                 ->requiredMapping()
                 ->rules(['required']),
@@ -79,34 +85,36 @@ class MasterListImporter extends Importer
 
     public function resolveRecord(): ?MasterList
     {
-        $religionId = $this->options['religion_id'];
-        $cityId = $this->options['city_id'];
-        $barangayId = $this->options['barangay_id'];
-        $purokId = $this->options['purok_id'];
+        // $religionId = $this->options['religion_id'];
+        // $cityId = $this->options['city_id'];
+        // $barangayId = $this->options['barangay_id'];
+        // $purokId = $this->options['purok_id'];
 
-        return MasterList::firstOrNew([
-            'osca_id' => $this->data['osca_id'],
-            'religion_id' => $religionId,
-            'city_id' => $cityId,
-            'barangay_id' => $barangayId,
-            'purok_id' => $purokId,
-            'last_name' => $this->data['last_name'],
-            'first_name' => $this->data['first_name'],
-            'middle_name' => $this->data['middle_name'],
-            'extension' => $this->data['extension'],
-            'birthday' => $this->data['birthday'],
-            'gender' => $this->data['gender'],
-            'civil_status' => $this->data['civil_status'],
-            'birth_place' => $this->data['birth_place'],
-            'gsis_id' => $this->data['gsis_id'],
-            'philhealth_id' => $this->data['philhealth_id'],
-            'illness' => $this->data['illness'],
-            'disability' => $this->data['disability'],
-            'educational_attainment' => $this->data['educational_attainment'],
-            'date_of_registration' => $this->data['date_of_registration'],
-            'is_active' => $this->data['is_active'],
-            'type' => $this->data['type'],
-        ]);
+        // return MasterList::firstOrNew([
+        //     'osca_id' => $this->data['osca_id'],
+        //     'religion_id' => $religionId,
+        //     'city_id' => $cityId,
+        //     'barangay_id' => $barangayId,
+        //     'purok_id' => $purokId,
+        //     'last_name' => $this->data['last_name'],
+        //     'first_name' => $this->data['first_name'],
+        //     'middle_name' => $this->data['middle_name'],
+        //     'birthday' => $this->data['birthday'],
+        //     'age' => $this->data['age'],
+        //     'gender' => $this->data['gender'],
+        //     'civil_status' => $this->data['civil_status'],
+        //     'birth_place' => $this->data['birth_place'],
+        //     "gsis_id" => $this->data['gsis_id'] ?? null,
+        //     'philhealth_id' => $this->data['philhealth_id'] ?? null,
+        //     'illness' => $this->data['illness'] ?? null,
+        //     'disability' => $this->data['disability'] ?? null,
+        //     'extension' => $this->data['extension'] ?? null,
+        //     'educational_attainment' => $this->data['educational_attainment'],
+        //     'date_of_registration' => $this->data['date_of_registration'],
+        //     'is_active' => $this->data['is_active'],
+        //     'type' => $this->data['type'],
+        // ]);
+        return new MasterList();
     }
 
     public static function getCompletedNotificationBody(Import $import): string

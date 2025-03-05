@@ -6,7 +6,16 @@ use App\Filament\Resources\MasterListResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
-
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Imports\MasterListImporter;
+use App\Filament\Exports\MasterListExporter;
+use Filament\Actions\ImportAction;
+use Filament\Actions\ExportAction;
+use Filament\Facades\Filament;
+use App\Models\Purok;
+use App\Models\Barangay;
+use App\Models\Religion;
+use App\Models\City;
 
 class ListMasterLists extends ListRecords
 {
@@ -16,7 +25,19 @@ class ListMasterLists extends ListRecords
     {
         return [
             Actions\CreateAction::make()->label('Add Senior Citizen'),
+            ImportAction::make()
+                ->importer(MasterListImporter::class)
+                ->options([
+                    'religion' => Religion::first()->id,
+                    'city_id' => City::first()->id,
+                    'barangay_id' => Barangay::first()->id,
+                    'purok_id' => Purok::first()->id,
 
+
+
+
+                ]),
+            ExportAction::make()->exporter(MasterListExporter::class),
 
         ];
     }

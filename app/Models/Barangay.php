@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Barangay extends Model
 {
-    public function masterList()
+    public function senior_citizens()
     {
         return $this->hasMany(MasterList::class);
     }
+
 
     // add fillable
     protected $fillable = [];

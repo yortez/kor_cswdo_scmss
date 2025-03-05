@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Purok extends Model
 {
-    //
+    public function senior_citizens()
+    {
+        return $this->hasMany(MasterList::class);
+    }
 
     // add fillable
     protected $fillable = [];
