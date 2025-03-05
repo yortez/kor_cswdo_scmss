@@ -6,11 +6,7 @@ use App\Filament\Resources\MasterListResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
-use App\Filament\Imports\MasterListImporter;
-use App\Filament\Exports\MasterListExporter;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Facades\Filament;
-use Filament\Tables\Actions\ImportAction;
+
 
 class ListMasterLists extends ListRecords
 {
@@ -20,25 +16,29 @@ class ListMasterLists extends ListRecords
     {
         return [
             Actions\CreateAction::make()->label('Add Senior Citizen'),
-            ImportAction::make()->importer(MasterListImporter::class)
-                ->options([
-                    'religion_id' => Filament::getReligion()->id,
-                    'city_id' => Filament::getCity()->id,
-                    'barangay_id' => Filament::getBarangay()->id,
-                    'purok_id' => Filament::getPurok()->id,
-                ]),
-            ExportAction::make()->exporter(MasterListExporter::class),
+
 
         ];
     }
     public function getTabs(): array
     {
-        return [
-            null => Tab::make('All'),
-            'Pensioner' => Tab::make()->query(fn($query) => $query->where('type', 'pensioner')->where('is_active', true)),
-            'Non-Pensioner' => Tab::make()->query(fn($query) => $query->where('type', 'non-pensioner')->where('is_active', true)),
-            'Inactive' => Tab::make()->query(fn($query) => $query->where('is_active', false)),
+        $baseQuery = MasterListResource::getEloquentQuery();
 
+        return [
+            'All' => Tab::make()
+                ->badge($baseQuery->count()),
+            'Pensioners' => Tab::make()
+                ->query(fn(Builder $query) => $query->where('type', 'pensioner')->where('is_active', true))
+                ->badge(fn() => $baseQuery->where('type', 'pensioner')->where('is_active', true)->count())
+                ->icon('heroicon-o-user'),
+            'Non-Pensioners' => Tab::make()
+                ->query(fn(Builder $query) => $query->where('type', 'non-pensioner')->where('is_active', true))
+                ->badge(fn() => $baseQuery->where('type', 'non-pensioner')->where('is_active', true)->count())
+                ->icon('heroicon-o-user'),
+            'Inactive' => Tab::make()
+                ->query(fn(Builder $query) => $query->where('is_active', false))
+                ->badge(fn() => $baseQuery->where('is_active', false)->count())
+                ->icon('heroicon-o-exclamation-circle'),
         ];
     }
 }

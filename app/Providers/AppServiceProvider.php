@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -49,6 +51,23 @@ class AppServiceProvider extends ServiceProvider
 
         DatePicker::configureUsing(function (DatePicker $datePicker) {
             $datePicker->inlineLabel();
+        });
+        CreateAction::configureUsing(function (CreateAction $action) {
+            $action->icon('heroicon-o-plus');
+        });
+        Action::configureUsing(function (Action $action) {
+            if ($action->getName() === 'save') {
+                $action->icon('heroicon-o-check');
+            }
+            if ($action->getName() === 'cancel') {
+                $action->icon('heroicon-o-x-mark');
+            }
+            if ($action->getName() === 'create') {
+                $action->icon('heroicon-o-plus');
+            }
+            if ($action->getName() === 'close') {
+                $action->icon('heroicon-o-x-mark');
+            }
         });
     }
 }

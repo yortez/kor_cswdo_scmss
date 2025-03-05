@@ -29,6 +29,10 @@ class MasterList extends Model
         return $this->belongsTo(Religion::class);
     }
 
+    public function payrolls()
+    {
+        return $this->belongsToMany(Payroll::class, 'payroll_senior_citizen')->withPivot('status');
+    }
     // add fillable
     protected $fillable = [];
     // add guaded

@@ -33,6 +33,7 @@ use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Schema;
 use EightyNine\Reports\ReportsPlugin;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -107,6 +108,7 @@ class AdminPanelProvider extends PanelProvider
     private function getPlugins(): array
     {
         $plugins = [
+            EasyFooterPlugin::make(),
             ReportsPlugin::make(),
             ThemesPlugin::make(),
             FilamentShieldPlugin::make(),

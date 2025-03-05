@@ -40,12 +40,12 @@ class MasterListReport extends Report
                             ])->alignLeft(),
                         Header\Layout\HeaderColumn::make()
                             ->schema([
-                                Text::make("Province of South Cotabato")
+                                Text::make("PROVINCE OF SOUTH COTABATO")
                                     ->subtitle()
-                                    ->fontXl()
+                                    ->fontLg()
                                     ->fontBold(),
 
-                                Text::make("Social Welfare and Development Office")
+                                Text::make("SOCIAL WELFARE AND DEVELOPMENT OFFICE")
                                     ->subtitle()
                                     ->fontLg()
                                     ->fontBold(),
@@ -59,16 +59,15 @@ class MasterListReport extends Report
 
                                 Text::make($barangayName)
                                     ->subtitle()
-                                    ->fontLg()
-                                    ->fontBold(),
+                                    ->font2Xl(),
 
 
                             ])->alignCenter(),
                         Header\Layout\HeaderColumn::make()
                             ->schema([
                                 Image::make($image2Path)
-                                    ->width8Xl(),
-                            ])->alignLeft(),
+                                    ->width4Xl(),
+                            ])->alignRight(),
 
 
 
@@ -99,9 +98,10 @@ class MasterListReport extends Report
                         Body\Table::make()
                             ->columns([
                                 Body\TextColumn::make("osca_id")
-                                    ->label("OSCA ID"),
+                                    ->label("Osca ID"),
                                 Body\TextColumn::make("last_name")
-                                    ->label("Last Name"),
+                                    ->label("Last Name")
+                                    ->weight(10),
                                 Body\TextColumn::make("first_name")
                                     ->label("First Name"),
                                 Body\TextColumn::make("middle_name")

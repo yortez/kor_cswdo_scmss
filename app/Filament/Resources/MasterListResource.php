@@ -24,7 +24,7 @@ use App\Filament\Imports\MasterListImporter;
 use App\Filament\Exports\MasterListExporter;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ExportAction;
-use Filament\Facades\Filament;
+
 
 class MasterListResource extends Resource
 {
@@ -163,6 +163,7 @@ class MasterListResource extends Resource
                                 ])
                                 ->required(),
                             Forms\Components\Select::make('purok_id')
+                                ->label('Purok')
                                 ->options(fn(Get $get): Collection => Purok::query()
                                     ->where('barangay_id', $get('barangay_id'))
                                     ->pluck('name', 'id'))
@@ -356,7 +357,10 @@ class MasterListResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->headerActions([]);
+            ->headerActions([
+                // ImportAction::make()->importer(MasterListImporter::class),
+                ExportAction::make()->exporter(MasterListExporter::class),
+            ]);
     }
 
 
