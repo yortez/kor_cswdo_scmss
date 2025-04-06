@@ -12,7 +12,6 @@ use EightyNine\Reports\Components\Text;
 use EightyNine\Reports\Components\VerticalSpace;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Hidden;
 
 class MasterListReport extends Report
 {
@@ -25,7 +24,7 @@ class MasterListReport extends Report
         $selectedBarangayId = $this->filterForm->getState()['barangay_id'] ?? null;
         $barangayName = $selectedBarangayId
             ? \App\Models\Barangay::find($selectedBarangayId)->name
-            : '-';
+            : '';
         $selectedType = $this->filterForm->getState()['type'] ?? null;
 
 
@@ -53,6 +52,12 @@ class MasterListReport extends Report
                                 Text::make("City of Koronadal")
                                     ->subtitle()
                                     ->fontLg()
+                                    ->fontBold(),
+                                VerticalSpace::make(),
+
+                                Text::make("Master List")
+                                    ->subtitle()
+                                    ->font2Xl()
                                     ->fontBold(),
                                 VerticalSpace::make(),
 

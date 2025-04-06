@@ -11,9 +11,13 @@ use Illuminate\Contracts\View\View;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Validation\ValidationException;
+use DiogoGPinto\AuthUIEnhancer\Pages\Auth\Concerns\HasCustomLayout;
+
 
 class Login extends BaseLogin
 {
+    use HasCustomLayout;
+
     protected static string $view = 'filament.pages.login';
 
     public function authenticate(): ?LoginResponse

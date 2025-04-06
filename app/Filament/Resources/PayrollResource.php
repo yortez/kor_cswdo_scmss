@@ -13,7 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
-
+use Guava\FilamentModalRelationManagers\Actions\Table\RelationManagerAction;
 
 
 class PayrollResource extends Resource
@@ -21,6 +21,8 @@ class PayrollResource extends Resource
     protected static ?string $model = Payroll::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    public static ?string $navigationGroup = 'Senior Management';
+
     protected static ?int $navigationSort = 3;
     public static function getNavigationBadge(): ?string
     {
@@ -50,8 +52,14 @@ class PayrollResource extends Resource
                                 if ($benefit) {
                                     $set('description', $benefit->description);
                                     $set('amount', $benefit->amount);
+                                    $set('slug', $state);
                                 }
                             }),
+
+                        Forms\Components\TextInput::make('slug')
+                            ->hidden()
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\Textarea::make('benefit_description')
                             ->label('Description')
                             ->disabled()
@@ -135,11 +143,12 @@ class PayrollResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make('edit'),
-                    Tables\Actions\DeleteAction::make('delete'),
+                RelationManagerAction::make('lesson-relation-manager')
+                    ->label('View seniors')
+                    ->icon('heroicon-o-eye')
+                    ->relationManager(SeniorsRelationManager::make()),
+                Tables\Actions\EditAction::make('edit'),
 
-                ])
             ])
             ->bulkActions([]);
     }

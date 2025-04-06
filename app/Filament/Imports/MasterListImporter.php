@@ -73,7 +73,6 @@ class MasterListImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required', 'date']),
             ImportColumn::make('is_active')
-                ->boolean()
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('type')

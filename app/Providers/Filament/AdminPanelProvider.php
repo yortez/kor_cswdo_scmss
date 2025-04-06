@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Schema;
 use EightyNine\Reports\ReportsPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use Filament\Navigation\NavigationGroup;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -100,6 +102,12 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->resources([
                 config('filament-logger.activity_resource')
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->navigationGroups([
+                NavigationGroup::make()->label('Senior Management'),
+                NavigationGroup::make()->label('Reports'),
+                NavigationGroup::make()->label('Settings'),
             ]);
     }
 
@@ -109,7 +117,11 @@ class AdminPanelProvider extends PanelProvider
     private function getPlugins(): array
     {
         $plugins = [
-            FilamentLaravelLogPlugin::make(),
+            // FilamentLaravelLogPlugin::make(),
+            AuthUIEnhancerPlugin::make()
+                ->emptyPanelBackgroundImageUrl('/images/2.jpeg')
+                ->formPanelPosition('right')
+                ->formPanelWidth('50%'),
             EasyFooterPlugin::make(),
             ReportsPlugin::make(),
             ThemesPlugin::make(),

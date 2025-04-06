@@ -20,7 +20,7 @@ class SeniorPopulationChart extends ChartWidget
     protected function getData(): array
     {
         $data = MasterList::select(
-            DB::raw(value: 'strftime("%Y", created_at) as year'),
+            DB::raw(value: 'strftime("%Y", date_of_registration) as year'),
             DB::raw('COUNT(*) as count')
         )
             ->groupBy('year')

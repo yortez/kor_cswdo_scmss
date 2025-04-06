@@ -36,6 +36,7 @@ class MasterListResource extends Resource
     protected static ?string $pluralModelLabel = 'Master List';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?int $navigationSort = 0;
+    public static ?string $navigationGroup = 'Senior Management';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -249,7 +250,6 @@ class MasterListResource extends Resource
 
             ])->columns(2);
     }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -321,7 +321,7 @@ class MasterListResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')
-                    ->label('Status')
+                    ->label('STATUS')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         '1' => 'primary',
@@ -331,8 +331,10 @@ class MasterListResource extends Resource
                         '1' => 'Active',
                         '0' => 'Inactive',
                     }),
-
-
+                Tables\Columns\TextColumn::make('type')
+                    ->label('TYPE')
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -362,15 +364,12 @@ class MasterListResource extends Resource
             ])
             ->headerActions([]);
     }
-
-
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
