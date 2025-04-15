@@ -18,15 +18,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use App\Models\Purok;
 use App\Models\Barangay;
-use App\Models\Religion;
-use App\Models\City;
-use Filament\Forms\Components\Radio;
-use App\Filament\Imports\MasterListImporter;
-use App\Filament\Exports\MasterListExporter;
-use Filament\Tables\Actions\ImportAction;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Facades\Filament;
+use Guava\FilamentModalRelationManagers\Actions\Table\RelationManagerAction;
 
+use Filament\Forms\Components\Radio;
+
+use App\Filament\Resources\SeniorCitizenResource\RelationManagers\PayrollsRelationManager;
 
 class MasterListResource extends Resource
 {
@@ -353,6 +349,10 @@ class MasterListResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    RelationManagerAction::make('lesson-relation-manager')
+                        ->label('View payroll history')
+                        ->icon('heroicon-o-information-circle')
+                        ->relationManager(PayrollsRelationManager::make()),
                     Tables\Actions\EditAction::make('edit'),
                     Tables\Actions\ViewAction::make('view'),
                 ])
@@ -367,7 +367,7 @@ class MasterListResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PayrollsRelationManager::class,
         ];
     }
     public static function getPages(): array

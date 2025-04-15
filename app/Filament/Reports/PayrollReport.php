@@ -2,9 +2,7 @@
 
 namespace App\Filament\Reports;
 
-use App\Models\Benefit;
 use App\Models\MasterList;
-use App\Models\Payroll;
 use EightyNine\Reports\Components\Image;
 use EightyNine\Reports\Report;
 use EightyNine\Reports\Components\Body;
@@ -17,14 +15,22 @@ use Filament\Forms\Form;
 
 class PayrollReport extends Report
 {
+    protected static ?string $navigaLabel = '';
     public ?string $heading = "Report";
 
 
     public function header(Header $header): Header
     {
-
         $image1Path = asset('koronadal-logo.png');
         $image2Path = asset('dswd-logo.jpg');
+        $selectedBarangayId = $this->filterForm->getState()['barangay_id'] ?? null;
+        $barangayName = $selectedBarangayId
+            ? 'Barangay ' . \App\Models\Barangay::find($selectedBarangayId)->name
+            : '';
+        $selectedPayrollId = $this->filterForm->getState()['payroll'] ?? null;
+        $payrollName = $selectedPayrollId
+            ? \App\Models\Benefit::find($selectedPayrollId)->name . ' Assistance Payroll'
+            : '';
 
         return $header
             ->schema([
@@ -52,11 +58,13 @@ class PayrollReport extends Report
                                     ->fontLg()
                                     ->fontBold(),
                                 VerticalSpace::make(),
-                                Text::make("Payroll")
+
+                                Text::make($payrollName)
                                     ->subtitle()
-                                    ->font2Xl()
-                                    ->fontBold(),
-                                VerticalSpace::make(),
+                                    ->font2Xl(),
+                                Text::make($barangayName)
+                                    ->subtitle()
+                                    ->font2Xl(),
 
 
                             ])->alignCenter(),
@@ -76,73 +84,83 @@ class PayrollReport extends Report
     public function body(Body $body): Body
     {
 
-        $selectedQuarter = $this->filterForm->getState()['quarter'] ?? null;
-
+        $selectedPayrollId = $this->filterForm->getState()['payroll'] ?? null;
+        $payrollName = $selectedPayrollId
+            ? \App\Models\Benefit::find($selectedPayrollId)->name . ' Assistance Beneficiaries'
+            : '';
+        $payrollAmount = $selectedPayrollId
+            ? \App\Models\Payroll::find($selectedPayrollId)->amount
+            : '';
 
         return $body
             ->schema([
                 Body\Layout\BodyColumn::make()
                     ->schema([
                         VerticalSpace::make(),
-                        Text::make("Payroll Report " . $selectedQuarter)
+                        Text::make("For the payment of " . $payrollName)
                             ->fontSm()
                             ->secondary(),
+
                         Body\Table::make()
                             ->columns([
-                                Body\TextColumn::make("created_at")
-                                    ->label("Date")
-                                    ->date('F d Y'),
-                                Body\TextColumn::make("benefit")
-                                    ->label("Benefit Type"),
-                                Body\TextColumn::make("note")
-                                    ->label("Note"),
-                                Body\TextColumn::make("status")
-                                    ->label("Status"),
+                                Body\TextColumn::make("osca_id")
+                                    ->label("Osca ID"),
+                                Body\TextColumn::make("full_name")
+                                    ->label("Name"),
+                                Body\TextColumn::make("birthday")
+                                    ->label("Birthday")
+                                    ->date(),
+                                Body\TextColumn::make("age")
+                                    ->label("Age"),
+                                Body\TextColumn::make("gender")
+                                    ->label("Gender"),
+                                Body\TextColumn::make("barangay_name")
+                                    ->label("Barangay"),
+                                Body\TextColumn::make('purok_name')
+                                    ->label('Purok'),
+                                Body\TextColumn::make('amount')
+                                    ->label('Amount')
+                                    ->money('PHP'),
+                                Body\TextColumn::make('signature')
+                                    ->label('Signature')
 
                             ])
                             ->data(
-                                function (?array $filters) {
-                                    return Payroll::query()->with('seniors')
-                                        ->join('benefits', 'payrolls.benefit_id', '=', 'benefits.id')
-
-
+                                function (?array $filters) use ($payrollAmount) {
+                                    return MasterList::query()->with('payrolls')
+                                        ->join('barangays', 'master_lists.barangay_id', '=', 'barangays.id')
+                                        ->join('puroks', 'master_lists.purok_id', '=', 'puroks.id')
                                         ->when(
-                                            $filters['benefit_id'] ?? null,
-                                            fn($query, $payrollId) => $query->where('payrolls.benefit_id', $payrollId)
+                                            $filters['barangay_id'] ?? null,
+                                            fn($query, $barangayId) => $query->where('master_lists.barangay_id', $barangayId)
                                         )
-                                        ->when($filters['quarter'] ?? null, function ($query, $quarter) {
-                                            return $query->where(function ($q) use ($quarter) {
-                                                switch ($quarter) {
-                                                    case 'First Quarter':
-                                                        return $q->whereMonth('payrolls.created_at', '>=', 1)
-                                                            ->whereMonth('payrolls.created_at', '<=', 3);
-                                                    case 'Second Quarter':
-                                                        return $q->whereMonth('payrolls.created_at', '>=', 4)
-                                                            ->whereMonth('payrolls.created_at', '<=', 6);
-                                                    case 'Third Quarter':
-                                                        return $q->whereMonth('payrolls.created_at', '>=', 7)
-                                                            ->whereMonth('payrolls.created_at', '<=', 9);
-                                                    case 'Forth Quarter':
-                                                        return $q->whereMonth('payrolls.created_at', '>=', 10)
-                                                            ->whereMonth('payrolls.created_at', '<=', 12);
-                                                }
-                                            });
-                                        })
+                                        ->when(
+                                            $filters['payroll'] ?? null,
+                                            fn($query, $payrollId) => $query->whereHas('payrolls', function ($q) use ($payrollId) {
+                                                $q->where('payrolls.id', $payrollId);
+                                            })
+                                        )
                                         ->select(
-                                            'payrolls.created_at',
-                                            'benefits.name as benefit',
-                                            'payrolls.note',
-                                            'payrolls.status',
-
-
+                                            'master_lists.osca_id',
+                                            'master_lists.full_name',
+                                            'master_lists.last_name',
+                                            'master_lists.first_name',
+                                            'master_lists.middle_name',
+                                            'master_lists.extension',
+                                            'master_lists.birthday',
+                                            'master_lists.age',
+                                            'master_lists.gender',
+                                            'barangays.name as barangay_name',
+                                            'puroks.name as purok_name',
+                                            'master_lists.signature',
+                                            \DB::raw("'$payrollAmount' as amount")
                                         )
                                         ->get();
                                 }
                             ),
-                    ])
+                    ]),
             ]);
     }
-
     public function footer(Footer $footer): Footer
     {
         return $footer
@@ -153,7 +171,7 @@ class PayrollReport extends Report
                             ->schema([]),
                         Footer\Layout\FooterColumn::make()
                             ->schema([
-                                Text::make("Generated on: " . now()->format('Y-m-d H:i:s')),
+                                Text::make("Generated on: " . now()->format('F j, Y H:i:s')),
                             ])
                             ->alignRight(),
                     ]),
@@ -162,30 +180,20 @@ class PayrollReport extends Report
 
     public function filterForm(Form $form): Form
     {
-        $benefits = \App\Models\Benefit::pluck('name', 'id');
-
         return $form
             ->schema([
-                Select::make('benefit_id')
-                    ->label('Benefit Type')
-                    ->options($benefits)
-                    ->placeholder('Benefit type')
-                    ->searchable(),
-
-                Select::make('quarter')
-                    ->label('Quarter')
-                    ->options([
-                        'First Quarter' => '1st Quarter (Jan-Mar)',
-                        'Second Quarter' => '2nd Quarter (Apr-Jun)',
-                        'Third Quarter' => '3rd Quarter (Jul-Sep)',
-                        'Forth Quarter' => '4th Quarter (Oct-Dec)',
-                    ])
-                    ->placeholder('Select a quarter')
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $selectedQuarter = $state;
-                        // You can now use $selectedBarangayId as needed
-                        // For example, you might want to set it to another component or use it in a query
+                Select::make('payroll')
+                    ->label('Payroll')
+                    ->options(fn() => \App\Models\Payroll::join('benefits', 'payrolls.benefit_id', '=', 'benefits.id')
+                        ->where('status', 'new')
+                        ->pluck('benefits.name', 'payrolls.id')) // Join with benefits table and pluck benefit name
+                    ->placeholder('All Payrolls'),
+                Select::make('barangay_id')
+                    ->label('Barangay')
+                    ->options(function () {
+                        return \App\Models\Barangay::pluck('name', 'id');
                     })
+                    ->placeholder('All Barangays')
             ]);
     }
 }

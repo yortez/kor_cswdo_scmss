@@ -23,7 +23,6 @@ class MasterList extends Model
         return $this->belongsTo(Purok::class);
     }
 
-
     public function religion()
     {
         return $this->belongsTo(Religion::class);
@@ -34,7 +33,33 @@ class MasterList extends Model
         return $this->belongsToMany(Payroll::class, 'payroll_senior_citizen')->withPivot('status');
     }
     // add fillable
-    protected $fillable = [];
+    protected $fillable = [
+        'osca_id',
+        'last_name',
+        'first_name',
+        'middle_name',
+        'extension',
+        'birthday',
+        'age',
+        'gender',
+        'civil_status',
+        'religion_id',
+        'birth_place',
+        'city_id',
+        'barangay_id',
+        'purok_id',
+        'gsis_id',
+        'philhealth_id',
+        'illness',
+        'disability',
+        'educational_attainment',
+        'date_of_registration',
+        'is_active',
+        'registry_number',
+        'date_of_death',
+        'remarks',
+
+    ];
     // add guaded
     protected $guarded = ['id'];
     // add hidden

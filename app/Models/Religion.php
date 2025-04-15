@@ -12,7 +12,11 @@ class Religion extends Model
     }
 
     // add fillable
-    protected $fillable = [];
+    protected $fillable = [
+        'id',
+        'name',
+        'description',
+    ];
     // add guaded
     protected $guarded = ['id'];
     // add hidden

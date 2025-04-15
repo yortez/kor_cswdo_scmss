@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 class SeniorPopulationChart extends ChartWidget
 {
     protected static ?string $heading = 'Registered Senior Citizens';
-    protected static ?int $sort = 2;
 
+    protected static ?int $sort = 2;
 
     protected function getType(): string
     {
@@ -20,7 +20,7 @@ class SeniorPopulationChart extends ChartWidget
     protected function getData(): array
     {
         $data = MasterList::select(
-            DB::raw(value: 'strftime("%Y", date_of_registration) as year'),
+            DB::raw('EXTRACT(YEAR FROM date_of_registration) as year'),
             DB::raw('COUNT(*) as count')
         )
             ->groupBy('year')

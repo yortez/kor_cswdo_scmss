@@ -104,16 +104,11 @@ class MasterListReport extends Report
                             ->columns([
                                 Body\TextColumn::make("osca_id")
                                     ->label("Osca ID"),
-                                Body\TextColumn::make("last_name")
-                                    ->label("Last Name")
-                                    ->weight(10),
-                                Body\TextColumn::make("first_name")
-                                    ->label("First Name"),
-                                Body\TextColumn::make("middle_name")
-                                    ->label("Middle Name"),
-                                Body\TextColumn::make("extension")
-                                    ->label("Ext"),
-
+                                Body\TextColumn::make("full_name")
+                                    ->label('Name'),
+                                Body\TextColumn::make("birthday")
+                                    ->label("Birthday")
+                                    ->date(),
                                 Body\TextColumn::make("age")
                                     ->label("Age"),
                                 Body\TextColumn::make("gender")
@@ -143,10 +138,12 @@ class MasterListReport extends Report
                                         )
                                         ->select(
                                             'master_lists.osca_id',
+                                            'master_lists.full_name',
                                             'master_lists.last_name',
                                             'master_lists.first_name',
                                             'master_lists.middle_name',
                                             'master_lists.extension',
+                                            'master_lists.birthday',
                                             'master_lists.age',
                                             'master_lists.gender',
                                             'barangays.name as barangay_name',

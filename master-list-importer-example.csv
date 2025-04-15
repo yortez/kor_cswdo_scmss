@@ -1,5 +1,1 @@
-﻿Osca id,Last name,First name,Middle name,Extension,Birthday,Age,Gender,Civil status,Religion id,Birth place,City,Barangay,Purok,Gsis id,Philhealth id,Illness,Disability,Educational attainment,Date of registration,Is active,Type
-51193,Herman,Deion,Everette Heaney,,1964-06-14,60,M,single,Roman Catholic,2904 Elsa Fall,Koronadal,Assumption,Purok 1,null,null,null,,elementary graduate,2020-10-23,1,pensioner
-504,Kreiger,Sarina,Gudrun Kub,null,1964-10-04,60,M,single,Baptist,404 Block Village,Koronadal,Morales,Purok 1,null,null,null,N/A,master degree,2021-03-13,1,pensioner
-299,Stokes,Nora,Alexandro Casper,null,1964-03-13,60,F,widowed,Roman Catholic,3197 Larson-Walsh Points,Koronadal,Cacub,Purok 1,null,null,null,N/A,elementary graduate,2022-05-22,0,pensioner
-173,Mitchell,Chester,Macy Boyle,null,1964-05-23,60,F,widowed,Islam,96057 Abernathy Ridges,Koronadal,Avanceña,Purok 1,null,null,null,N/A,master degree,2023-04-25,1,pensioner
+﻿osca_id,last_name,first_name,middle_name,extension,birthday,age,gender,civil_status,religion_id,birth_place,city_id,barangay_id,purok_id,gsis_id,philhealth_id,illness,disability,educational_attainment,date_of_registration,is_active,type

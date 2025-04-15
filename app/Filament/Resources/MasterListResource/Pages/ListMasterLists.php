@@ -35,7 +35,7 @@ class ListMasterLists extends ListRecords
         return ImportAction::make()
             ->importer(MasterListImporter::class)
             ->options([
-                'religion' => Religion::first()->id,
+                'religion_id' => Religion::first()->id,
                 'city_id' => City::first()->id,
                 'barangay_id' => Barangay::first()->id,
                 'purok_id' => Purok::first()->id,

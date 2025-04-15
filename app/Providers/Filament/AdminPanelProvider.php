@@ -37,6 +37,7 @@ use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
 use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Navigation\NavigationGroup;
+use CodeWithDennis\FilamentThemeInspector\FilamentThemeInspectorPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -117,11 +118,12 @@ class AdminPanelProvider extends PanelProvider
     private function getPlugins(): array
     {
         $plugins = [
+            // FilamentThemeInspectorPlugin::make()
+            // ->toggle(),
             // FilamentLaravelLogPlugin::make(),
             AuthUIEnhancerPlugin::make()
                 ->emptyPanelBackgroundImageUrl('/images/2.jpeg')
-                ->formPanelPosition('right')
-                ->formPanelWidth('50%'),
+                ->formPanelPosition('right'),
             EasyFooterPlugin::make(),
             ReportsPlugin::make(),
             ThemesPlugin::make(),
